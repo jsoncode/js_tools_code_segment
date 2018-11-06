@@ -5,7 +5,6 @@
 // @description  连续半小时出现价格横线就认为异常
 // @author       You
 // @match        https://**/**
-// @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
 // @run-at       document-start
@@ -80,10 +79,10 @@
                         console.log(timeLongSecond);
                     }, 1000);
                     if (errorList.length > 0) {
-                        sendWXmsg(errorList.join(' \n') + '\n下次更新：10分钟后');
+                        sendWXmsg(`${new Date().format()} \n${errorList.join(' \n')} \n下次更新：10分钟后`);
                         errorList = [];
                     }else{
-                        sendWXmsg('做市正常 \n下次更新：10分钟后');
+                        sendWXmsg(`${new Date().format()} \n做市正常 \n下次更新：10分钟后`);
                     }
                 }
             } else {
@@ -100,10 +99,10 @@
                         console.log(timeLongSecond);
                     }, 1000);
                     if (errorList.length > 0) {
-                        sendWXmsg(errorList.join(' \n') + '\n下次更新：10分钟后');
+                        sendWXmsg(`${new Date().format()} \n${errorList.join(' \n')} \n下次更新：10分钟后`);
                         errorList = [];
                     }else{
-                        sendWXmsg('做市正常 \n下次更新：10分钟后');
+                        sendWXmsg(`${new Date().format()} \n做市正常 \n下次更新：10分钟后`);
                     }
                 }
             }
@@ -167,7 +166,7 @@
                         index = 0;
                         timeLongSecond = timeLong * 60;
                         console.log('已停止，发送命令：开始 将会继续执行');
-                        sendWXmsg('已停止监控 \n发送"开始"可以开始监控');
+                        sendWXmsg(`${new Date().format()} \n已停止监控 \n发送"开始"可以开始监控`);
                         started = false;
                     }
                 } else if (txt === '开始') {
@@ -178,7 +177,7 @@
                         unsafeWindow.tenMinuteTimer = setInterval(function() {
                             getEveryPair(index);
                         }, timeLong * 60 * 1000);
-                        sendWXmsg('已开始监控 \n发送"停止"可以停止监控');
+                        sendWXmsg(`${new Date().format()} \n已开始监控 \n发送"停止"可以停止监控`);
                     }
                 }
             }
