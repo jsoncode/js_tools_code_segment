@@ -4,12 +4,15 @@
     // @version      0.1
     // @description  try to take over the world!
     // @author       You
-    // @match        https://www.xxx.com/*
+// @require      https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js
+// @require      https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js
+    // @match        https://www.bitsex.io/*
     // @grant        GM_xmlhttpRequest
     // ==/UserScript==
 
     (function() {
         'use strict';
+        $('head').append('<link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">');
         var asset = [];
         var rateOld = [];
         var rate = [];
@@ -27,11 +30,23 @@
             if (loadingEl) {
                 var huobiprice = document.querySelector('#huobiprice');
                 if (!huobiprice) {
-                    loadingEl.insertAdjacentHTML('afterend', '<div id="huobiprice"></div>');
+                    loadingEl.insertAdjacentHTML('afterend', '<div id="huobiprice" title="火币价格"></div>');
                     huobiprice = document.querySelector('#huobiprice');
-                    huobiprice.addEventListener('click', function() {
-
-                    }, false)
+                    $( huobiprice ).dialog({
+                        width: 450,
+                        position: { using:function(pos){
+                            var topOffset = $(this).css(pos).offset().top;
+                            if (topOffset = 0||topOffset>0) {
+                                $(this).css({
+                                    left:20,
+                                    top:innerHeight-300,
+                                });
+                            }
+                        }},
+                        dragStop:function(e){
+                            console.log(e);
+                        }
+                    });
                 }
                 getPrice(function(data) {
                     rateOld = rate;
@@ -94,7 +109,7 @@
                                  </div>
                             </div>`
                         });
-                        html = `<div style="position: fixed;top: 400px;z-index: 2;background: #444f62;left: 0;line-height:2;">
+                        html = `<div>
                             <div class="px-2 pt-2 text-center h4 text-white"><a href="https://www.huobi.com" target="_blank">火币实时价格</a></div>
                             <div class="media pb-2">${html}</div>
                         </div>`;
@@ -136,14 +151,14 @@
                 var oldAsset = {
                     btc: 3,
                     eth: 30,
+                    usdt:10000,
                 };
                 var allUsdt = 0;
-                var oldUsdt = 10000;
                 asset.forEach(function(item) {
                     if (rateMap[item.name]) {
                         item.usdt = rateMap[item.name] * item.amount;
                         if (oldAsset[item.name]) {
-                            oldUsdt += oldAsset[item.name] * rateMap[item.name]
+                            oldAsset.usdt += oldAsset[item.name] * rateMap[item.name]
                         }
                     } else {
                         item.usdt = item.amount;
@@ -152,7 +167,7 @@
                 });
                 dom1.innerText = '';
                 dom2.innerText = '';
-                dom3.innerText = ` 原 ${oldUsdt.toFixed(2)} 现 ${allUsdt.toFixed(2)} 盈利 ${(allUsdt-oldUsdt).toFixed(2)} USDT`;
+                dom3.innerText = ` 原 ${oldAsset.usdt.toFixed(2)} 现 ${allUsdt.toFixed(2)} 盈利 ${(allUsdt-oldAsset.usdt).toFixed(2)} USDT`;
             }
         }
 
